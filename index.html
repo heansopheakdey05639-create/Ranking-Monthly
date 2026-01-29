@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Student Ranking Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .form-title {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .student-row {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .add-btn {
+            margin: 10px 0;
+        }
+        .rank-badge {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+        .st-rank { background-color: gold; }
+        .nd-rank { background-color: silver; }
+        .rd-rank { background-color: #cd7f32; }
+        .no-rank { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="form-title">📊 Monthly Student Ranking Form</h1>
+        
+        <form id="rankingForm">
+            <!-- Basic Information Section -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label for="month" class="form-label fw-bold">Month</label>
+                    <select class="form-select" id="month" required>
+                        <option value="">Select Month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="teacherName" class="form-label fw-bold">Teacher's Name</label>
+                    <input type="text" class="form-control" id="teacherName" placeholder="Enter teacher's name" required>
+                </div>
+                
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Class Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="classType" id="specialClass" value="Special" checked>
+                        <label class="form-check-label" for="specialClass">Special Class (ថ្នាក់ពិសេស)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="classType" id="generalClass" value="General">
+                        <label class="form-check-label" for="generalClass">General Class (ថ្នាក់ធម្មតា)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Ranking Section -->
+            <div class="mb-4">
+                <h4 class="mb-3">Student Rankings</h4>
+                <p class="text-muted">Add students and their rankings. Click "Add Student" for additional entries, especially for tied rankings.</p>
+                
+                <div id="studentsContainer">
+                    <!-- First Student Row -->
+                    <div class="student-row">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Student's Name</label>
+                                <input type="text" class="form-control student-name" placeholder="Enter student name" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Rank</label>
+                                <select class="form-select rank-select" required>
+                                    <option value="1">1st</option>
+                                    <option value="2">2nd</option>
+                                    <option value="3">3rd</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Ordinal</label>
+                                <input type="text" class="form-control ordinal-display" value="st" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Grade</label>
+                                <select class="form-select grade-select" required>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Level</label>
+                                <select class="form-select level-select" required>
+                                    <option value="Pre-Beginner">Pre-Beginner</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Elementary">Elementary</option>
+                                    <option value="Pre-Intermediate">Pre-Intermediate</option>
+                                    <option value="Lower-Intermediate">Lower-Intermediate</option>
+                                    <option value="Upper-Intermediate">Upper-Intermediate</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary add-btn" id="addStudentBtn">
+                    <i class="bi bi-plus-circle"></i> Add Student
+                </button>
+                
+                <div class="mt-3">
+                    <button type="button" class="btn btn-warning btn-sm" id="addTiedRankBtn">
+                        <i class="bi bi-people-fill"></i> Add Extra Student for Tied Rank
+                    </button>
+                    <small class="text-muted ms-2">Use this when multiple students share the same rank</small>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="mb-4">
+                <h5>Preview</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="previewTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Teacher's Name</th>
+                                <th>Student's Name</th>
+                                <th>Rank</th>
+                                <th>Ordinal</th>
+                                <th>Grade</th>
+                                <th>Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preview rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary" id="clearBtn">Clear Form</button>
+                <div>
+                    <button type="button" class="btn btn-info me-2" id="previewBtn">Update Preview</button>
+                    <button type="submit" class="btn btn-success">Submit to Google Sheets</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Google Sheets API Script (Replace with your actual script URL) -->
+    <script>
+        // This is a template for Google Sheets integration
+        // You'll need to replace this with your actual Google Apps Script deployment URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykos6Ldl4obGw9eySK3CcmpFZos3wOz79g_2TuVPIVS5Ixb79A5Yg4dXUOtago7lxn/exec';
+        
+        // Sample function to show how to submit to Google Sheets
+        async function submitToGoogleSheets(data) {
+            try {
+                const response = await fetch(https://script.google.com/macros/s/AKfycbykos6Ldl4obGw9eySK3CcmpFZos3wOz79g_2TuVPIVS5Ixb79A5Yg4dXUOtago7lxn/exec, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Since we use 'no-cors', we can't read the response
+                // But you can handle success/failure in your Google Apps Script
+                alert('Data submitted successfully!');
+                document.getElementById('rankingForm').reset();
+                document.getElementById('studentsContainer').innerHTML = '';
+                addNewStudentRow(); // Reset to one row
+                updatePreview();
+            } catch (error) {
+                alert('Error submitting data: ' + error.message);
+            }
+        }
+    </script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to get ordinal suffix
+        function getOrdinalSuffix(rank) {
+            const j = rank % 10;
+            const k = rank % 100;
+            if (j === 1 && k !== 11) return "st";
+            if (j === 2 && k !== 12) return "nd";
+            if (j === 3 && k !== 13) return "rd";
+            return "th";
+        }
+
+        // Function to add new student row
+        function addNewStudentRow() {
+            const container = document.getElementById('studentsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'student-row';
+            newRow.innerHTML = `
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control student-name" placeholder="Enter student name" required>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select rank-select" required>
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3">3rd</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control ordinal-display" value="st" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select grade-select" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select level-select" required>
+                            <option value="Pre-Beginner">Pre-Beginner</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Elementary">Elementary</option>
+                            <option value="Pre-Intermediate">Pre-Intermediate</option>
+                            <option value="Lower-Intermediate">Lower-Intermediate</option>
+                            <option value="Upper-Intermediate">Upper-Intermediate</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm mt-2 remove-student" style="display: none;">
+                    <i class="bi bi-trash"></i> Remove
+                </button>
+            `;
+            container.appendChild(newRow);
+            
+            // Add event listener to rank select
+            const rankSelect = newRow.querySelector('.rank-select');
+            const ordinalDisplay = newRow.querySelector('.ordinal-display');
+            
+            rankSelect.addEventListener('change', function() {
+                const rank = parseInt(this.value);
+                ordinalDisplay.value = getOrdinalSuffix(rank);
+            });
+            
+            // Show remove button for non-first rows
+            if (container.children.length > 1) {
+                newRow.querySelector('.remove-student').style.display = 'block';
+            }
+            
+            // Add remove functionality
+            const removeBtn = newRow.querySelector('.remove-student');
+            removeBtn.addEventListener('click', function() {
+                newRow.remove();
+                updatePreview();
+            });
+        }
+
+        // Function to update preview table
+        function updatePreview() {
+            const teacherName = document.getElementById('teacherName').value || '[Teacher Name]';
+            const month = document.getElementById('month').value || '[Month]';
+            const classType = document.querySelector('input[name="classType"]:checked').value;
+            
+            const previewBody = document.querySelector('#previewTable tbody');
+            previewBody.innerHTML = '';
+            
+            // Add header row with month and class type
+            const headerRow = document.createElement('tr');
+            headerRow.className = 'table-info';
+            headerRow.innerHTML = `
+                <td colspan="6" class="fw-bold">
+                    ${month} - ${classType} Class
+                </td>
+            `;
+            previewBody.appendChild(headerRow);
+            
+            // Add student rows
+            const studentRows = document.querySelectorAll('.student-row');
+            studentRows.forEach(row => {
+                const studentName = row.querySelector('.student-name').value || '[Student Name]';
+                const rank = row.querySelector('.rank-select').value;
+                const ordinal = row.querySelector('.ordinal-display').value;
+                const grade = row.querySelector('.grade-select').value;
+                const level = row.querySelector('.level-select').value;
+                
+                const previewRow = document.createElement('tr');
+                previewRow.innerHTML = `
+                    <td>${teacherName}</td>
+                    <td>${studentName}</td>
+                    <td>${rank}</td>
+                    <td>${ordinal}</td>
+                    <td>${grade}</td>
+                    <td>${level}</td>
+                `;
+                previewBody.appendChild(previewRow);
+            });
+        }
+
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add first student row event listeners
+            const firstRankSelect = document.querySelector('.rank-select');
+            const firstOrdinalDisplay = document.querySelector('.ordinal-display');
+            
+            firstRankSelect.addEventListener('change', function() {
+                const rank = parseInt(this.value);
+                firstOrdinalDisplay.value = getOrdinalSuffix(rank);
+            });
+
+            // Add Student button
+            document.getElementById('addStudentBtn').addEventListener('click', function() {
+                addNewStudentRow();
+                updatePreview();
+            });
+
+            // Add Tied Rank button (adds student with same rank as last)
+            document.getElementById('addTiedRankBtn').addEventListener('click', function() {
+                const studentRows = document.querySelectorAll('.student-row');
+                if (studentRows.length === 0) return;
+                
+                const lastRow = studentRows[studentRows.length - 1];
+                const lastRank = lastRow.querySelector('.rank-select').value;
+                
+                addNewStudentRow();
+                
+                const newRow = document.querySelector('.student-row:last-child');
+                newRow.querySelector('.rank-select').value = lastRank;
+                newRow.querySelector('.ordinal-display').value = getOrdinalSuffix(parseInt(lastRank));
+                
+                updatePreview();
+            });
+
+            // Update Preview button
+            document.getElementById('previewBtn').addEventListener('click', updatePreview);
+
+            // Clear Form button
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear the entire form?')) {
+                    document.getElementById('rankingForm').reset();
+                    document.getElementById('studentsContainer').innerHTML = '';
+                    addNewStudentRow();
+                    updatePreview();
+                }
+            });
+
+            // Form submit handler
+            document.getElementById('rankingForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const month = document.getElementById('month').value;
+                const teacherName = document.getElementById('teacherName').value;
+                const classType = document.querySelector('input[name="classType"]:checked').value;
+                
+                const students = [];
+                const studentRows = document.querySelectorAll('.student-row');
+                
+                studentRows.forEach(row => {
+                    students.push({
+                        studentName: row.querySelector('.student-name').value,
+                        rank: row.querySelector('.rank-select').value,
+                        ordinal: row.querySelector('.ordinal-display').value,
+                        grade: row.querySelector('.grade-select').value,
+                        level: row.querySelector('.level-select').value
+                    });
+                });
+                
+                // Prepare data for Google Sheets
+                const sheetData = {
+                    month: month,
+                    teacherName: teacherName,
+                    classType: classType,
+                    students: students,
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('Data to submit:', sheetData);
+                
+                // Here you would call your Google Sheets submission function
+                // submitToGoogleSheets(sheetData);
+                
+                // For now, show a success message
+                alert(`Data prepared for submission:\n\nMonth: ${month}\nTeacher: ${teacherName}\nClass: ${classType}\nStudents: ${students.length}\n\n(Google Sheets integration would be implemented here)`);
+                
+                // Update preview one last time
+                updatePreview();
+            });
+
+            // Auto-update preview when inputs change
+            document.getElementById('month').addEventListener('change', updatePreview);
+            document.getElementById('teacherName').addEventListener('input', updatePreview);
+            document.querySelectorAll('input[name="classType"]').forEach(radio => {
+                radio.addEventListener('change', updatePreview);
+            });
+
+            // Initialize preview
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
